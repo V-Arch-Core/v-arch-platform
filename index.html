@@ -16,19 +16,19 @@
             </div>
             <div class="text-right text-[10px] text-slate-500 font-mono">
                 <p>BASE: fwwozcfjdpswghzyqgie</p>
-                <p id="db-status">STATUS: <span class="text-green-500 animate-pulse">CONNECTING...</span></p>
+                <div id="db-status">STATUS: <span class="text-amber-500 animate-pulse">INITIATING...</span></div>
             </div>
         </header>
 
         <main class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <section class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 hover:border-blue-500/50 transition-colors">
+            <section class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700">
                 <h2 class="text-xl font-bold mb-6 flex items-center">
                     <span class="w-2 h-6 bg-blue-500 mr-3"></span>AI 硬體架構配置
                 </h2>
                 <div class="space-y-6">
                     <div>
                         <label class="block text-xs text-slate-500 mb-2 uppercase tracking-widest">Target Project</label>
-                        <input type="text" id="project_name" value="Project-UBike-EPaper" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-blue-300">
+                        <input type="text" id="project_name" value="Project-UBike-EPaper" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-blue-300">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-500 mb-2 uppercase tracking-widest">MCU Architecture</label>
@@ -37,7 +37,7 @@
                             <option value="ESP32-S3">ESP32-S3 (IoT Enhanced)</option>
                         </select>
                     </div>
-                    <button onclick="runAIVerify()" class="w-full bg-blue-600 hover:bg-blue-400 text-white font-bold py-4 rounded-lg transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95">
+                    <button onclick="runAIVerify()" class="w-full bg-blue-600 hover:bg-blue-400 text-white font-bold py-4 rounded-lg transition-all active:scale-95">
                         啟動 AI 架構驗證並存檔
                     </button>
                 </div>
@@ -49,66 +49,77 @@
                         <span class="w-2 h-6 bg-red-500 mr-3"></span>供應商信用過濾器
                     </h2>
                     <div class="space-y-4">
-                        <input type="text" id="supplier_name" placeholder="輸入廠商名稱進行誠信檢索..." class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg outline-none focus:border-red-500 transition-colors">
+                        <input type="text" id="supplier_name" placeholder="輸入「匠心」或「快速精密」進行檢索..." class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg outline-none focus:border-red-500">
                         <button onclick="checkSupplier()" class="w-full bg-slate-700 hover:bg-red-900 text-slate-300 hover:text-white py-3 rounded-lg font-semibold transition-all">
                             執行數位監工檢索
                         </button>
                     </div>
-                    <div id="check-result" class="mt-4 p-4 rounded-lg hidden">
-                        </div>
+                    <div id="check-result" class="mt-4 p-4 rounded-lg hidden border"></div>
                 </div>
 
                 <div class="bg-gradient-to-br from-slate-800 to-blue-900/20 p-6 rounded-2xl border border-blue-500/20 text-center">
-                    <p class="text-xs text-blue-300 mb-2 uppercase">Unlock Technical Datasheet</p>
-                    <p class="text-sm text-slate-400 mb-4 font-light">上傳捐款收據，AI 將釋放加密的 BOM 與設計圖。</p>
+                    <p class="text-xs text-blue-300 mb-2 uppercase tracking-widest text-[10px]">Technical Datasheet Encryption</p>
                     <button class="bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 px-6 py-2 rounded-full border border-blue-500/30 text-xs transition-all">
-                        上傳收據 (Verification)
+                        上傳收據 (Waiting for Receipt)
                     </button>
                 </div>
             </section>
         </main>
     </div>
 
-// 初始化 Supabase 基地
-const SUPABASE_URL = 'https://fwwozcfjdpswghzyqgie.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3d296Y2ZqZHBzd2doenlxZ2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMjc3MTksImV4cCI6MjA4NTcwMzcxOX0.nnJZvcqua1z3rPGnDGl5pOC2zO-8fvEI5sIQUvwy0AQ';
-const _varch = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script>
+        // 1. 初始化 Supabase
+        const SUPABASE_URL = 'https://fwwozcfjdpswghzyqgie.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3d296Y2ZqZHBzd2doenlxZ2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMjc3MTksImV4cCI6MjA4NTcwMzcxOX0.nnJZvcqua1z3rPGnDGl5pOC2zO-8fvEI5sIQUvwy0AQ';
+        const _varch = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// 檢查廠商黑名單 (優化模糊搜尋版)
-async function checkSupplier() {
-    const name = document.getElementById('supplier_name').value.trim();
-    const resultDiv = document.getElementById('check-result');
-    
-    if (!name) return alert("請輸入廠商名稱");
+        // 2. 狀態檢查
+        window.onload = () => {
+            if (_varch) {
+                document.getElementById('db-status').innerHTML = 'STATUS: <span class="text-green-500">CONNECTED</span>';
+            }
+        };
 
-    console.log("正在基地檢索關鍵字:", name); // 除錯用
-
-    // 改用 .ilike 進行模糊搜尋：只要名稱包含該字眼即可搜到
-    const { data, error } = await _varch
-        .from('varch_suppliers')
-        .select('*')
-        .ilike('company_name', `%${name}%`); 
-
-    resultDiv.classList.remove('hidden');
-    
-    if (error) {
-        console.error("基地讀取異常:", error);
-        resultDiv.className = "mt-4 p-4 rounded-lg bg-orange-900/40 text-orange-200";
-        resultDiv.innerHTML = "❌ 基地通訊異常，請確認密鑰是否正確。";
-        return;
-    }
-
-    if (data && data.length > 0) {
-        const supplier = data[0]; 
-        if (supplier.is_blacklisted) {
-            resultDiv.className = "mt-4 p-4 rounded-lg bg-red-900/40 border border-red-500 text-red-200 animate-pulse";
-            resultDiv.innerHTML = `⚠️ 警告：該廠商在黑名單中！<br>原因：${supplier.history_logs.join('、')}`;
-        } else {
-            resultDiv.className = "mt-4 p-4 rounded-lg bg-green-900/40 border border-green-500 text-green-200";
-            resultDiv.innerHTML = `🛡️ 信用良好：${supplier.company_name}<br>評分：${supplier.credit_score} / 100`;
+        // 3. AI 驗證存檔功能
+        async function runAIVerify() {
+            const name = document.getElementById('project_name').value;
+            const mcu = document.getElementById('mcu_type').value;
+            const { data, error } = await _varch
+                .from('varch_projects')
+                .insert([{ name: name, specs: { mcu: mcu, power: '10uA' } }]).select();
+            
+            if (error) alert("存檔異常，請檢查資料表權限。");
+            else alert("✅ 模擬完成！專案 ID: " + data[0].id);
         }
-    } else {
-        resultDiv.className = "mt-4 p-4 rounded-lg bg-slate-700 text-slate-300";
-        resultDiv.innerHTML = `🔍 查無紀錄：基地尚未收錄「${name}」。`;
-    }
-}
+
+        // 4. 供應商檢索功能
+        async function checkSupplier() {
+            const name = document.getElementById('supplier_name').value.trim();
+            const resultDiv = document.getElementById('check-result');
+            if (!name) return alert("請輸入廠商關鍵字");
+
+            // 執行模糊搜尋
+            const { data, error } = await _varch
+                .from('varch_suppliers')
+                .select('*')
+                .ilike('company_name', `%${name}%`);
+
+            resultDiv.classList.remove('hidden');
+
+            if (data && data.length > 0) {
+                const s = data[0];
+                if (s.is_blacklisted) {
+                    resultDiv.className = "mt-4 p-4 rounded-lg bg-red-900/40 border-red-500 text-red-200 animate-pulse";
+                    resultDiv.innerHTML = `⚠️ 黑名單警告：${s.company_name}<br>原因：${s.contract_logs ? s.contract_logs.join('、') : '不詳'}`;
+                } else {
+                    resultDiv.className = "mt-4 p-4 rounded-lg bg-green-900/40 border-green-500 text-green-200";
+                    resultDiv.innerHTML = `🛡️ 信用良好：${s.company_name}<br>評分：${s.credit_score} / 100`;
+                }
+            } else {
+                resultDiv.className = "mt-4 p-4 rounded-lg bg-slate-700 text-slate-300";
+                resultDiv.innerHTML = `🔍 基地無紀錄：「${name}」`;
+            }
+        }
+    </script>
+</body>
+</html>

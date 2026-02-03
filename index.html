@@ -2,28 +2,79 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>V-Arch | AI-Driven Hardware Architecture</title>
-    <style>
-        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', Courier, monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .container { border: 1px solid #00ff41; padding: 40px; max-width: 700px; box-shadow: 0 0 20px rgba(0,255,65,0.2); background: rgba(0, 20, 0, 0.9); }
-        h1 { font-size: 2.2em; border-bottom: 2px solid #00ff41; padding-bottom: 15px; margin-top: 0; }
-        p { line-height: 1.8; font-size: 1.1em; }
-        .status-bar { background: #00ff41; color: #000; padding: 5px 10px; font-weight: bold; margin-bottom: 20px; display: inline-block; }
-        .action-link { color: #00ff41; border: 1px solid #00ff41; padding: 10px 20px; text-decoration: none; display: inline-block; margin-top: 25px; transition: all 0.3s; }
-        .action-link:hover { background: #00ff41; color: #000; }
-        .glitch { animation: flash 2s infinite; }
-        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-Arch Platform | 專業硬體建築師</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <div class="status-bar">SYSTEM: ONLINE</div>
-        <h1>V-Arch Protocol v1.0</h1>
-        <p>> <span class="glitch">正在驗證硬體誠信...</span></p>
-        <p>> 當前專案：UBike 戶外電子紙看板 (架構評估中)</p>
-        <p>> 核心邏輯：太陽能收支平衡模擬 / 零金流公益驗證</p>
-        <p>> 警告：排除一切人為利益干擾</p>
-        <a href="https://github.com/V-Arch-Core/v-arch-platform/tree/main/Project-UBike-EPaper" class="action-link">進入核心儲存庫</a>
+<body class="bg-slate-900 text-slate-100 font-sans">
+    <div class="max-w-6xl mx-auto p-8">
+        <header class="flex justify-between items-end border-b border-slate-700 pb-8 mb-12">
+            <div>
+                <h1 class="text-4xl font-black tracking-tighter text-blue-400">V-ARCH CORE</h1>
+                <p class="text-slate-400 mt-2 italic">明事理 · 懂真心 | 拒絕詐騙，回歸技術本質</p>
+            </div>
+            <div class="text-right text-xs text-slate-500">
+                <p>Status: AI Operation Mode</p>
+                <p>Donation Target: 防詐騙基金會</p>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <section class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700">
+                <h2 class="text-xl font-bold mb-6 flex items-center">
+                    <span class="w-2 h-6 bg-blue-500 mr-3"></span>專案配置 (UBike E-Paper)
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">處理核心</label>
+                        <select class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option>Ultra-Low Power Cortex-M4</option>
+                            <option>ESP32-S3 (WiFi/BT Edition)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">顯示規格</label>
+                        <select class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg">
+                            <option>2.9" Tri-color E-Ink Display</option>
+                            <option>4.2" High-Contrast Mono</option>
+                        </select>
+                    </div>
+                    <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-lg transition-all shadow-lg shadow-blue-900/20">
+                        開始 AI 硬體模擬
+                    </button>
+                </div>
+            </section>
+
+            <section class="space-y-8">
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-dashed border-slate-600">
+                    <h3 class="text-lg font-semibold text-blue-300 mb-4">AI 預覽結果</h3>
+                    <div class="space-y-3 opacity-50">
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span>預估功耗 (Deep Sleep)</span>
+                            <span class="font-mono">12.5 uA</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span>BOM 成本預算</span>
+                            <span class="font-mono">$18.42 USD</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 bg-gradient-to-br from-blue-900/40 to-slate-800 p-6 rounded-xl border border-blue-500/30">
+                        <p class="text-sm text-blue-200 mb-4 font-light text-center uppercase tracking-widest">解鎖完整技術文件 (CAD/BOM)</p>
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="text-center">
+                                <p class="text-xs text-slate-400">請捐款至防詐騙基金會</p>
+                                <p class="text-lg font-mono font-bold">$10.00 USD</p>
+                            </div>
+                            <input type="file" id="receipt" class="hidden">
+                            <label for="receipt" class="cursor-pointer bg-blue-500 hover:bg-blue-400 px-6 py-2 rounded-full text-sm font-bold transition">
+                                上傳捐款收據驗證
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 </body>
 </html>

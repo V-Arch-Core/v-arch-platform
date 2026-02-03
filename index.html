@@ -69,19 +69,43 @@
         </main>
     </div>
 
-    <script>
-        // 初始化 Supabase 基地
-        const SUPABASE_URL = "https://fwwozcfjdpswghzyqgie.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3d296Y2ZqZHBzd2doenlxZ2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMjc3MTksImV4cCI6MjA4NTcwMzcxOX0.nnJZvcqua1z3rPGnDGl5pOC2zO-8fvEI5sIQUvwy0AQ";
-        const _varch = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// 初始化 Supabase 基地
+const SUPABASE_URL = 'https://fwwozcfjdpswghzyqgie.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3d296Y2ZqZHBzd2doenlxZ2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMjc3MTksImV4cCI6MjA4NTcwMzcxOX0.nnJZvcqua1z3rPGnDGl5pOC2zO-8fvEI5sIQUvwy0AQ';
+const _varch = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 檢查資料庫狀態
-        window.onload = () => {
-            const statusIcon = document.querySelector('#db-status');
-            if (_varch) {
-                statusIcon.innerHTML = 'STATUS: <span class="text-green-500">CONNECTED</span>';
-            }
-        };
+// 檢查廠商黑名單 (優化模糊搜尋版)
+async function checkSupplier() {
+    const name = document.getElementById('supplier_name').value.trim();
+    const resultDiv = document.getElementById('check-result');
+    
+    if (!name) return alert("請輸入廠商名稱");
 
-        // 功能 1：AI 驗證並將配置存入資料庫
-        async function runAIV
+    // 使用 ilike 進行模糊搜尋，不分大小寫
+    const { data, error } = await _varch
+        .from('varch_suppliers')
+        .select('*')
+        .ilike('company_name', `%${name}%`); // 只要名稱內包含輸入的字即可
+
+    resultDiv.classList.remove('hidden');
+    
+    if (error) {
+        resultDiv.className = "mt-4 p-4 rounded-lg bg-orange-900/40 text-orange-200";
+        resultDiv.innerHTML = "❌ 查詢出錯，請檢查網絡連線。";
+        return;
+    }
+
+    if (data && data.length > 0) {
+        const supplier = data[0]; // 取第一筆匹配結果
+        if (supplier.is_blacklisted) {
+            resultDiv.className = "mt-4 p-4 rounded-lg bg-red-900/40 border border-red-500 text-red-200 animate-bounce";
+            resultDiv.innerHTML = `⚠️ 警告：該廠商在黑名單中！<br>原因：${supplier.history_logs.join('、')}`;
+        } else {
+            resultDiv.className = "mt-4 p-4 rounded-lg bg-green-900/40 border border-green-500 text-green-200";
+            resultDiv.innerHTML = `🛡️ 信用良好：${supplier.company_name} 通過匠心驗證。<br>評分：${supplier.credit_score}`;
+        }
+    } else {
+        resultDiv.className = "mt-4 p-4 rounded-lg bg-slate-700 text-slate-300";
+        resultDiv.innerHTML = "🔍 數據庫暫無此紀錄，請謹慎對待新廠商。";
+    }
+}
